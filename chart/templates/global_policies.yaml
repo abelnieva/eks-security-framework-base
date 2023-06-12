@@ -11,6 +11,8 @@ spec:
     repoURL: {{ .Values.repoUrl }}
     path: ClusterPolicies/global
     targetRevision: {{ .Values.targetRevision }}
+    directory:
+      recurse: true
   destination:
     server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
     namespace: kube-system
