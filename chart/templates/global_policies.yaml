@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: global-policies
+  namespace: {{ .Values.argoNamespace | default "argocd" }}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.argoProject | default "default" }}
+  source:
+    repoURL: {{ .Values.repoUrl }}
+    path: ClusterPolicies/global
+    targetRevision: {{ .Values.targetRevision }}
+  destination:
+    server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 1
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m
